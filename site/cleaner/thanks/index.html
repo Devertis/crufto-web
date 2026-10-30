@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanks — your Crufto Cleaner license</title>
+<meta name="description" content="Your Crufto Cleaner license key.">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/favicon.png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="wordmark" href="/">
+    <img src="/assets/icon.png" width="26" height="26" alt="">Crufto
+  </a>
+  <nav class="nav-links">
+    <a class="btn btn-sm" href="/cleaner/">Crufto Cleaner</a>
+  </nav>
+</header>
+
+<main>
+  <section class="section" style="max-width:720px;margin:0 auto;text-align:center">
+    <p class="eyebrow"><a href="/cleaner/" class="crumb">Crufto Cleaner</a> · Purchase complete</p>
+    <h1 style="margin-bottom:.4em">Thank you.</h1>
+    <p class="sub" style="margin:0 auto">Your license unlocks cleaning on all your Macs — no subscription, no account.</p>
+
+    <div id="state" class="license-wrap">
+      <p class="license-status" id="status">Preparing your license key…</p>
+    </div>
+
+    <ol class="license-steps">
+      <li>Download and open <a href="/downloads/Crufto-Cleaner-1.0.0.dmg" download>Crufto&nbsp;Cleaner</a> (free to try).</li>
+      <li>Choose <strong>Crufto&nbsp;Cleaner&nbsp;&rsaquo;&nbsp;Enter&nbsp;License</strong> from the menu bar.</li>
+      <li>Paste your key and click <strong>Activate</strong>.</li>
+    </ol>
+
+    <p class="license-note">A copy of your key has also been emailed to you — keep it as your receipt.
+      Trouble? <a href="mailto:hello@crufto.com">hello@crufto.com</a>.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="foot-brand"><a href="/"><img src="/assets/icon.png" width="22" height="22" alt="">Crufto</a></div>
+  <nav class="foot-links">
+    <a href="/cleaner/">Crufto Cleaner</a>
+    <a href="/">All products</a>
+  </nav>
+  <p class="foot-legal">Crufto is a brand of Advertis&nbsp;OÜ.<br>© 2026 Karel&nbsp;Paan. All rights reserved.</p>
+</footer>
+
+<script>
+(function () {
+  var API = "https://api.crufto.com";
+  var sid = new URLSearchParams(location.search).get("session_id");
+  var statusEl = document.getElementById("status");
+  var stateEl = document.getElementById("state");
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function showKey(license, email) {
+    stateEl.innerHTML =
+      '<p class="license-label">Your license key' + (email ? ' for ' + escapeHTML(email) : '') + '</p>' +
+      '<pre class="license-key" id="key">' + escapeHTML(license) + '</pre>' +
+      '<button class="btn" id="copy" type="button">Copy key</button>';
+    var btn = document.getElementById("copy");
+    btn.addEventListener("click", function () {
+      navigator.clipboard.writeText(license).then(function () {
+        btn.textContent = "Copied ✓";
+        setTimeout(function () { btn.textContent = "Copy key"; }, 2000);
+      });
+    });
+  }
+
+  function showFallback() {
+    stateEl.innerHTML =
+      '<p class="license-status">Your license key is on its way to your email — it usually arrives within a minute. ' +
+      "If it doesn't, email <a href=\"mailto:hello@crufto.com\">hello@crufto.com</a> and we'll sort it out.</p>";
+  }
+
+  async function load() {
+    if (!sid) { showFallback(); return; }
+    for (var i = 0; i < 10; i++) {
+      try {
+        var r = await fetch(API + "/v1/license?session_id=" + encodeURIComponent(sid));
+        if (r.status === 200) { var d = await r.json(); showKey(d.license, d.email); return; }
+        if (r.status !== 404) break;            // 404 = webhook not processed yet; keep waiting
+      } catch (e) { /* network hiccup; retry */ }
+      statusEl.textContent = "Preparing your license key…";
+      await sleep(1500);
+    }
+    showFallback();
+  }
+
+  load();
+})();
+</script>
+
+</body>
+</html>

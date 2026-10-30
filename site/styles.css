@@ -189,3 +189,14 @@ a.product:hover .product-meta .go{color:var(--text)}
 @media (max-width:720px){
   .products{grid-template-columns:1fr}
 }
+
+/* Thank-you / license page */
+.license-wrap{margin:40px auto 0;max-width:620px;border:1px solid var(--line);border-radius:16px;padding:clamp(24px,3vw,34px);background:#fafafa}
+.license-status{color:var(--muted);font-size:15.5px;line-height:1.55;margin:0}
+.license-label{color:var(--faint);font-size:12.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin:0 0 12px}
+.license-key{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.5;word-break:break-all;white-space:pre-wrap;text-align:left;margin:0 0 18px;color:var(--ink)}
+.license-steps{max-width:620px;margin:36px auto 0;text-align:left;padding-left:22px;color:var(--text)}
+.license-steps li{padding:7px 0;font-size:15.5px;line-height:1.5}
+.license-note{color:var(--faint);font-size:14px;margin-top:26px;line-height:1.55}
+.license-note a,.license-steps a{color:var(--accent);text-decoration:none}
+.license-note a:hover,.license-steps a:hover{text-decoration:underline}
